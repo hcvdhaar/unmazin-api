@@ -1,0 +1,27 @@
+# Ignore node_modules directory (if you're using PNPM, you might still want to ignore this)
+node_modules/
+
+# Ignore PNPM package store
+.pnpm/
+
+# Ignore build output
+dist/
+
+# Ignore environment variables file
+.env
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore npm debugging log
+npm-debug.log*
+
+# Ignore vscode settings
+.vscode/
+
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# Mark down files
+TODO.md
