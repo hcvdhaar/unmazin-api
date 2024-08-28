@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web: # Name of the service
+    build: . # Path to the Dockerfile
+    ports:
+      - '4200:3000' # Port mapping
+    volumes:
+      - ./:/usr/src/app
+      - ignore_modules:/usr/src/app/node_modules
+    environment:
+      - PORT=3000
+    networks:
+      - unmazing-network
+volumes:
+  ignore_modules:
+
+# Define the network, by default it is bridge.
+networks:
+  unmazing-network:
+    driver: bridge

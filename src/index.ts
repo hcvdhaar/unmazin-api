@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyparser.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World');
+  res.send('Hello World this is awesome, maar nu met TSUP echt waar?');
 });
 
 app.listen(process.env.PORT, () => {
