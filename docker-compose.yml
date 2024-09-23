@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_unmazin
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: unmazin_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5500:5432'
+    networks:
+      - unmazin-network
+networks:
+  unmazin-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

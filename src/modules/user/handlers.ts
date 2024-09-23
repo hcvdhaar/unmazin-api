@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { DataServiceRepository } from './data';
 import { UserService } from './service';
 
 /**
@@ -10,8 +9,8 @@ import { UserService } from './service';
  */
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = await UserService.getUser();
-  res.send(user);
+  const users = await UserService.getUsers();
+  res.status(200).send(users);
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -20,8 +19,8 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const user = await UserService.createUser();
-  res.send(user);
+  const user = await UserService.createUser(req.body);
+  res.json(user);
 };
 
 export const updateUser = async (req: Request, res: Response) => {
