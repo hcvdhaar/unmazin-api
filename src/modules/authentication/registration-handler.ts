@@ -6,6 +6,7 @@ import { createToken } from './token';
 export const registerHandler = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
+  // TODO: add more validation
   // TODO: Check if email is valid
 
   // Check if all fields are provided
@@ -41,6 +42,7 @@ export const registerHandler = async (req: Request, res: Response) => {
 
     const token = createToken({
       id: user.id.toString(),
+      name: user.name!,
       email: user.email,
     });
 
