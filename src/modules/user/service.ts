@@ -18,9 +18,21 @@ export class UserService {
     return userFromDB;
   }
 
-  static async createUser({ name, email }: { name: string; email: string }) {
+  static async createUser({
+    name,
+    email,
+    password,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
     try {
-      const userFromDB = await DataServiceRepository.create({ name, email });
+      const userFromDB = await DataServiceRepository.create({
+        name,
+        email,
+        password,
+      });
       return userFromDB;
     } catch (e) {
       return { error: 'Could not create user' };

@@ -13,8 +13,8 @@ app.use(express.static('public'));
 
 app.use(morgan('dev')); // logging
 
-app.use('/register', registerHandler);
-app.use('/login', loginHandler);
+app.post('/register', registerHandler);
+app.post('/login', loginHandler);
 
 // Add some validation here, if the user is authenticated.
 app.use('/api', [UserRouter]);

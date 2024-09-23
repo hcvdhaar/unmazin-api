@@ -21,11 +21,20 @@ export class DataServiceRepository {
     return user;
   }
 
-  static async create({ name, email }: { name: string; email: string }) {
+  static async create({
+    name,
+    email,
+    password,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
+        password,
       },
     });
 
