@@ -2,14 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface RequestWithUser extends Request {
-  user: { id: string };
+  userId: string;
 }
 
-export function protectRoute(
-  req: RequestWithUser,
-  res: Response,
-  next: NextFunction
-) {
+export interface JWTToken {
+  id: string;
+  name: string;
+  email: string;
+  iat: number;
+}
+
+export function protectRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.headers.authorization) {
     return res.status(401).send({ error: 'No token provided' });
   }
@@ -22,14 +25,14 @@ export function protectRoute(
   }
 
   // Verify the token
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET) as JWTToken;
 
   if (!decoded) {
     return res.status(401).send({ error: 'Invalid token' });
   }
 
-  // Add the user to the request object
-  req.user.id = '1234';
+  // Set the userId in the request object
+  (req as RequestWithUser).userId = decoded.id;
 
   next();
 }

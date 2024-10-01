@@ -7,8 +7,15 @@ import {
 } from './bookmark.model';
 
 export class DataServiceRepository {
-  static async getAll(): Promise<BookmarkResponseDto[] | null> {
+  static async getAll({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<BookmarkResponseDto[] | null> {
     const bookmarks = await prisma.bookmark.findMany({
+      where: {
+        userId: +userId,
+      },
       select: {
         id: true,
         url: true,
@@ -18,16 +25,24 @@ export class DataServiceRepository {
         type: true,
         createdAt: true,
         updatedAt: true,
+        userId: true,
       },
     });
 
     return bookmarks;
   }
 
-  static async getById(id: string): Promise<BookmarkResponseDto | null> {
+  static async getById({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<BookmarkResponseDto | null> {
     const bookmark = await prisma.bookmark.findUnique({
       where: {
         id: +id,
+        userId: +userId,
       },
       select: {
         id: true,

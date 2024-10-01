@@ -3,13 +3,16 @@ import { BookmarkService } from './service';
 import { asyncHandler } from '../../utils/async-handler';
 
 export const getBookmark = asyncHandler(async (req: Request, res: Response) => {
-  const bookmarks = await BookmarkService.getBookmarks();
+  const bookmarks = await BookmarkService.getBookmarks({ userId: req.userId! });
   res.status(200).send(bookmarks);
 }, 'Could not get bookmarks');
 
 export const getBookmarkById = asyncHandler(
   async (req: Request, res: Response) => {
-    const bookmark = await BookmarkService.getBookmarkById(req.params.id);
+    const bookmark = await BookmarkService.getBookmarkById({
+      id: req.params.id,
+      userId: req.userId!,
+    });
     res.send(bookmark);
   },
   'Could not get bookmark with provided id'
@@ -25,8 +28,8 @@ export const createBookmark = asyncHandler(
 
 export const updateBookmark = asyncHandler(
   async (req: Request, res: Response) => {
-    const data = { ...req.body, id: req.params.id };
-    const bookmark = await BookmarkService.updateBookmark(data);
+    const params = { ...req.body, id: req.params.id };
+    const bookmark = await BookmarkService.updateBookmark(params);
     res.send(bookmark);
   },
   'Could not update bookmark'

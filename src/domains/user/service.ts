@@ -15,15 +15,11 @@ export class UserService {
   }
 
   static async createUser(ctx: UserRequestCreateDto) {
-    try {
-      const userFromDB = await DataServiceRepository.create({
-        ...ctx,
-      });
+    const userFromDB = await DataServiceRepository.create({
+      ...ctx,
+    });
 
-      return userFromDB;
-    } catch (e) {
-      return { error: 'Could not create user' };
-    }
+    return userFromDB;
   }
 
   static async updateUser(ctx: UserRequestUpdateDto) {

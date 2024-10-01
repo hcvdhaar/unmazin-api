@@ -2,14 +2,14 @@ import { BookmarkType } from '@prisma/client';
 import { DataServiceRepository } from './data-service';
 
 export class BookmarkService {
-  static async getBookmarks() {
-    const bookmarks = await DataServiceRepository.getAll();
+  static async getBookmarks({ userId }: { userId: string }) {
+    const bookmarks = await DataServiceRepository.getAll({ userId });
 
     return bookmarks;
   }
 
-  static async getBookmarkById(id: string) {
-    const bookmark = await DataServiceRepository.getById(id);
+  static async getBookmarkById({ id, userId }: { id: string; userId: string }) {
+    const bookmark = await DataServiceRepository.getById({ id, userId });
 
     return bookmark;
   }
