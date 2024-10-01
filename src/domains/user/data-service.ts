@@ -1,7 +1,12 @@
 import prisma from '../../modules/db';
+import {
+  UserRequestCreateDto,
+  UserRequestUpdateDto,
+  UserResponseDto,
+} from './user.model';
 
 export class DataServiceRepository {
-  static async getAll() {
+  static async getAll(): Promise<UserResponseDto[] | null> {
     const allUsers = await prisma.user.findMany({
       select: {
         id: true,
@@ -9,15 +14,22 @@ export class DataServiceRepository {
         email: true,
       },
     });
+
     return allUsers;
   }
 
-  static async getById(id: string) {
+  static async getById(id: string): Promise<UserResponseDto | null> {
     const user = await prisma.user.findUnique({
       where: {
         id: +id,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
+
     return user;
   }
 
@@ -25,30 +37,42 @@ export class DataServiceRepository {
     name,
     email,
     password,
-  }: {
-    name: string;
-    email: string;
-    password: string;
-  }) {
+  }: UserRequestCreateDto): Promise<UserResponseDto | null> {
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
     return newUser;
   }
 
-  static async update(id: string) {
+  static async update({
+    id,
+    name,
+    email,
+    password,
+  }: UserRequestUpdateDto): Promise<UserResponseDto | null> {
     const updateUser = await prisma.user.update({
       where: {
         id: +id,
       },
       data: {
-        name: 'provide_some_name_here',
-        email: 'add_some@email.com',
+        name,
+        email,
+        password,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
       },
     });
 

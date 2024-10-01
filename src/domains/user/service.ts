@@ -1,51 +1,42 @@
 import { DataServiceRepository } from './data-service';
-
-// Add error handling here
-// Do Schema Validation here
+import { UserRequestCreateDto, UserRequestUpdateDto } from './user.model';
 
 export class UserService {
   static async getUsers() {
-    try {
-      const userFromDB = await DataServiceRepository.getAll();
-      return userFromDB;
-    } catch (e) {
-      return { error: 'Could not get users' };
-    }
+    const userFromDB = await DataServiceRepository.getAll();
+
+    return userFromDB;
   }
 
   static async getUserById(id: string) {
     const userFromDB = await DataServiceRepository.getById(id);
+
     return userFromDB;
   }
 
-  static async createUser({
-    name,
-    email,
-    password,
-  }: {
-    name: string;
-    email: string;
-    password: string;
-  }) {
+  static async createUser(ctx: UserRequestCreateDto) {
     try {
       const userFromDB = await DataServiceRepository.create({
-        name,
-        email,
-        password,
+        ...ctx,
       });
+
       return userFromDB;
     } catch (e) {
       return { error: 'Could not create user' };
     }
   }
 
-  static async updateUser(id: string) {
-    const userFromDB = await DataServiceRepository.update(id);
+  static async updateUser(ctx: UserRequestUpdateDto) {
+    const userFromDB = await DataServiceRepository.update({
+      ...ctx,
+    });
+
     return userFromDB;
   }
 
   static async deleteUser(id: string) {
     const userFromDB = await DataServiceRepository.delete(id);
+
     return userFromDB;
   }
 }
