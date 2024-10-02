@@ -6,7 +6,10 @@ import {
   getUserById,
   updateUser,
 } from './handlers';
+import { schemaValidator } from '../../middleware/schema-validator';
+import { userCreateSchema } from './schema-validator';
 
+// TODO: Check if this endpoint is usefull
 const router = Router();
 
 router.use((req, res, next) => {
@@ -22,7 +25,7 @@ router.get('/user', getUser);
 
 router.get('/user/:id', getUserById);
 
-router.post('/user', createUser);
+router.post('/user', schemaValidator(userCreateSchema), createUser);
 
 router.put('/user/:id', updateUser);
 

@@ -3,6 +3,7 @@ import primsa from '../db';
 import { hashPassword } from './password';
 import { createToken } from './token';
 
+// Move logic to service
 export const registerHandler = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -25,6 +26,7 @@ export const registerHandler = async (req: Request, res: Response) => {
 
   if (user) {
     res.status(400).send('User already exists');
+
     return;
   }
 
@@ -49,6 +51,7 @@ export const registerHandler = async (req: Request, res: Response) => {
     res.status(201).send({ token });
   } catch (e) {
     console.error(e);
+
     return res.status(409).send('Could not create user');
   }
 };

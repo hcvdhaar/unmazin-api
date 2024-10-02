@@ -20,7 +20,10 @@ export const getBookmarkById = asyncHandler(
 
 export const createBookmark = asyncHandler(
   async (req: Request, res: Response) => {
-    const bookmark = await BookmarkService.createBookmark(req.body);
+    const bookmark = await BookmarkService.createBookmark({
+      ...req.body,
+      userId: req.userId!,
+    });
     res.json(bookmark);
   },
   'Could not create bookmark'
@@ -28,7 +31,7 @@ export const createBookmark = asyncHandler(
 
 export const updateBookmark = asyncHandler(
   async (req: Request, res: Response) => {
-    const params = { ...req.body, id: req.params.id };
+    const params = { ...req.body, id: req.params.id, userId: req.userId! };
     const bookmark = await BookmarkService.updateBookmark(params);
     res.send(bookmark);
   },

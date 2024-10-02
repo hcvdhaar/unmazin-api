@@ -23,9 +23,8 @@ app.use(morgan('dev')); // logging
 app.post('/register', registerHandler);
 app.post('/login', loginHandler);
 
-// Add some validation here, if the user is authenticated.
-app.use('/api', protectRoute, [UserRouter, BookmarkRouter]);
-// NOTE: The order of the middleware is important. The errorHandler should be after the routes.
-app.use(errorHandler);
+// NOTE: the error handler is now part of the api route, should it be a global middleware?
+// Also for the other routes like /register and /login??
+app.use('/api', protectRoute, [UserRouter, BookmarkRouter], errorHandler);
 
 export default app;

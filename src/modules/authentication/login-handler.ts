@@ -3,11 +3,12 @@ import { Request, Response } from 'express';
 import primsa from '../db';
 import { isPasswordValid } from './password';
 
+// Move logic to service
+// Make it use the global error handler.
 export const loginHandler = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   let user;
-
   try {
     user = await primsa.user.findUnique({
       where: {
@@ -20,15 +21,14 @@ export const loginHandler = async (req: Request, res: Response) => {
         password: true,
       },
     });
-
-    if (!user) {
-      res.status(401).send({ message: 'Unauthorized' });
-      return;
-    }
   } catch (e) {
     console.error(e);
-    res.status(500).send('Internal server error');
-    return;
+
+    return res.status(500).send('Internal server error');
+  }
+
+  if (!user) {
+    return res.status(401).send({ message: 'Unauthorized' });
   }
 
   if (await isPasswordValid(password, user.password)) {
