@@ -2,15 +2,15 @@ import { createToken } from './token';
 import { Request, Response } from 'express';
 import primsa from '../db';
 import { isPasswordValid } from './password';
+import { asyncHandler } from '../../utils/async-handler';
+import { StatusCodes } from 'http-status-codes';
 
 // Move logic to service
-// Make it use the global error handler.
-export const loginHandler = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const loginHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-  let user;
-  try {
-    user = await primsa.user.findUnique({
+    const user = await primsa.user.findUnique({
       where: {
         email,
       },
@@ -21,25 +21,23 @@ export const loginHandler = async (req: Request, res: Response) => {
         password: true,
       },
     });
-  } catch (e) {
-    console.error(e);
 
-    return res.status(500).send('Internal server error');
-  }
+    if (!user) {
+      throw new Error('Unauthorized: User not found');
+    }
 
-  if (!user) {
-    return res.status(401).send({ message: 'Unauthorized' });
-  }
+    if (await isPasswordValid(password, user.password)) {
+      const token = createToken({
+        id: user.id.toString(),
+        name: user.name!,
+        email: user.email,
+      });
 
-  if (await isPasswordValid(password, user.password)) {
-    const token = createToken({
-      id: user.id.toString(),
-      name: user.name!,
-      email: user.email,
-    });
-
-    return res.send({ token });
-  }
-
-  res.status(401).send({ message: 'Unauthorized' });
-};
+      return res.send({ token });
+    } else {
+      throw new Error('Unauthorized: Password is incorrect');
+    }
+  },
+  undefined,
+  StatusCodes.UNAUTHORIZED
+);

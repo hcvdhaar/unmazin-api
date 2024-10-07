@@ -2,39 +2,28 @@ import { Request, Response } from 'express';
 import primsa from '../db';
 import { hashPassword } from './password';
 import { createToken } from './token';
+import { asyncHandler } from '../../utils/async-handler';
+import { StatusCodes } from 'http-status-codes';
 
 // Move logic to service
-export const registerHandler = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+// TOOD: we need to add a custom status code for each expception. Now we can only sent 1 general
+// passed to the asyncHandle. We need to add it to the Error class and use it in the Errohandler.
+export const registerHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { name, email, password } = req.body;
+    const user = await primsa.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
-  // TODO: add more validation
-  // TODO: Check if email is valid
-
-  // Check if all fields are provided
-  for (const field of [name, email, password]) {
-    if (!field) {
-      return res.status(400).send('All fields are required');
+    if (user) {
+      throw new Error('User already exists');
     }
-  }
 
-  // Check if the user already exists
-  const user = await primsa.user.findUnique({
-    where: {
-      email,
-    },
-  });
+    const hashedPassword = await hashPassword(password);
 
-  if (user) {
-    res.status(400).send('User already exists');
-
-    return;
-  }
-
-  const hashedPassword = await hashPassword(password);
-
-  // Create the user
-  try {
-    const user = await primsa.user.create({
+    const createdUser = await primsa.user.create({
       data: {
         name,
         email,
@@ -43,15 +32,17 @@ export const registerHandler = async (req: Request, res: Response) => {
     });
 
     const token = createToken({
-      id: user.id.toString(),
-      name: user.name!,
-      email: user.email,
+      id: createdUser.id.toString(),
+      name: createdUser.name!,
+      email: createdUser.email,
     });
 
-    res.status(201).send({ token });
-  } catch (e) {
-    console.error(e);
-
-    return res.status(409).send('Could not create user');
-  }
-};
+    if (token === undefined) {
+      return res.status(201).send({ token });
+    } else {
+      throw new Error('Could not create user');
+    }
+  },
+  undefined,
+  StatusCodes.CONFLICT
+);

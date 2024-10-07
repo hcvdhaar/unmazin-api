@@ -9,6 +9,11 @@ import {
   protectRoute,
 } from './modules/authentication';
 import { errorHandler } from './middleware/error-handler';
+import { schemaValidator } from './middleware/schema-validator';
+import {
+  logingSchema,
+  registerSchema,
+} from './modules/authentication/schema-validator';
 
 const app = express();
 
@@ -20,11 +25,12 @@ app.use(express.static('public'));
 
 app.use(morgan('dev')); // logging
 
-app.post('/register', registerHandler);
-app.post('/login', loginHandler);
+app.post('/register', schemaValidator(registerSchema), registerHandler);
+app.post('/login', schemaValidator(logingSchema), loginHandler);
+app.use('/api', protectRoute, [UserRouter, BookmarkRouter]);
 
-// NOTE: the error handler is now part of the api route, should it be a global middleware?
-// Also for the other routes like /register and /login??
-app.use('/api', protectRoute, [UserRouter, BookmarkRouter], errorHandler);
+// Since all the routes are wrapped in the asyncHanlder, which catches all the errors and propagates
+// them to the error handler, we can remove the error handler from the routes
+app.use(errorHandler);
 
 export default app;
