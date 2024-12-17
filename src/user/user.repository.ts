@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '@app/prisma/prisma.service';
 
 @Injectable()
 export class UserRepopository {
   constructor(private prisma: PrismaService) {}
 
-  getAllUsers(): any {
+  getAllUsers(): Promise<User[]> {
     return this.prisma.user.findMany();
   }
 
-  getUser(id: number): any {
-    console.log('get me the user with id: ', id);
-
+  getUser(id: number): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {
         id: id,
@@ -20,13 +18,21 @@ export class UserRepopository {
     });
   }
 
-  createUser(data: any): any {
+  createUser(data: any): Promise<User> {
     return this.prisma.user.create({
       data: data,
     });
   }
 
-  updateUser(id: number, data: Prisma.UserUpdateInput): any {
+  getUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+  }
+
+  updateUser(id: number, data: Prisma.UserUpdateInput): Promise<User> {
     // TODO: Check if the user exists
 
     // TODO: Check if the user is trying to update the email
@@ -39,7 +45,7 @@ export class UserRepopository {
     });
   }
 
-  deleteUser(id: number): any {
+  deleteUser(id: number): Promise<User> {
     return this.prisma.user.delete({
       where: {
         id: id,
