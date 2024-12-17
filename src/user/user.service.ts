@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { UserRepopository } from './user.repository';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
+  constructor(private userRepository: UserRepopository) {}
+
   getAllUsers(): string {
-    return 'This action returns all users';
+    return this.userRepository.getAllUsers();
   }
 
-  getUser(id: number): string {
-    return `This action returns a #${id} user`;
+  getUser(id: number): any {
+    return this.userRepository.getUser(id);
   }
 
-  createUser(): string {
-    return 'This action adds a new user';
+  createUser(data): any {
+    return this.userRepository.createUser(data);
   }
 
-  updateUser(id: number): string {
-    return `This action updates a #${id} user`;
+  updateUser(id: number, data: Prisma.UserUpdateInput): string {
+    return this.userRepository.updateUser(id, data);
   }
 
   deleteUser(id: number): string {
-    return `This action removes a #${id} user`;
-  }
-
-  getUserProfile(): string {
-    return 'This action returns user profile';
+    return this.userRepository.deleteUser(id);
   }
 }

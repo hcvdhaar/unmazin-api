@@ -1,37 +1,46 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from 'src/dtos/create-user.dto';
+import { UpdateUserDto } from 'src/dtos/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getUser() {
-    return this.userService.getUser(1);
-  }
-
-  @Get()
   getAllUsers() {
     return this.userService.getAllUsers();
   }
 
+  @Get('/:id')
+  getUser(@Param('id') id: number) {
+    return this.userService.getUser(+id);
+  }
+
   @Post()
-  createUser() {
-    return this.userService.createUser();
+  createUser(@Body() userData: CreateUserDto) {
+    return this.userService.createUser(userData);
   }
 
   @Put('/:id')
-  updateUser() {
-    return this.userService.updateUser(1);
+  updateUser(
+    @Body() data: UpdateUserDto,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.userService.updateUser(id, data);
   }
 
   @Delete('/:id')
   deleteUser() {
     return this.userService.deleteUser(1);
-  }
-
-  @Get('profile')
-  getUserProfile() {
-    return this.userService.getUserProfile();
   }
 }
