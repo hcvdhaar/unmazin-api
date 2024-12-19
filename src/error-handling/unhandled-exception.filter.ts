@@ -17,6 +17,8 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const { path, method } = ctx.getRequest<Request>();
 
+    console.log('I AM IN THE GLOBAL EXCEPTION FILTER', exception);
+
     this.logger.error({
       method,
       path,

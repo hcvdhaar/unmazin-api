@@ -16,14 +16,22 @@ export class UserService {
     return this.userRepository.getUser(id);
   }
 
-  async createUser({ email, name }): Promise<User> {
+  getUserByEmail(email: string): Promise<User> {
+    return this.userRepository.getUserByEmail(email);
+  }
+
+  async createUser({
+    email,
+    name,
+    password,
+  }: Omit<Prisma.UserCreateInput, 'createdAt'>): Promise<User> {
     const existingUser = await this.userRepository.getUserByEmail(email);
 
     if (existingUser) {
       throw new BadRequestException('Email already taken');
     }
 
-    return await this.userRepository.createUser({ name, email });
+    return await this.userRepository.createUser({ name, email, password });
   }
 
   async updateUser(id: number, data: Prisma.UserUpdateInput): Promise<User> {

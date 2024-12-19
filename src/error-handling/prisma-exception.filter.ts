@@ -9,7 +9,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { Response } from 'express';
 
-@Catch(Prisma.PrismaClientKnownRequestError)
+@Catch(Prisma.PrismaClientKnownRequestError, Prisma.PrismaClientValidationError)
 export class PrismaExceptionFilter implements ExceptionFilter {
   constructor(private logger: Logger) {}
 

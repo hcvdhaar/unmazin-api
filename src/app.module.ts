@@ -8,9 +8,15 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './error-handling/http-exception.filter';
 import { GlobalErrorFilter } from './error-handling/unhandled-exception.filter';
 import { PrismaExceptionFilter } from './error-handling/prisma-exception.filter';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
-  imports: [UserModule, ConfigModule.forRoot(), PrismaModule],
+  imports: [
+    UserModule,
+    ConfigModule.forRoot(),
+    PrismaModule,
+    AuthenticationModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

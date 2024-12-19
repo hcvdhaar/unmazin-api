@@ -1,4 +1,10 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsStrongPassword,
+} from 'class-validator';
+import { PASSWORD_CONFIG } from './settings';
 
 export class UpdateUserDto {
   @IsString()
@@ -8,4 +14,8 @@ export class UpdateUserDto {
   @IsEmail()
   @IsOptional()
   email: string;
+
+  @IsStrongPassword(PASSWORD_CONFIG)
+  @IsOptional()
+  password: string;
 }

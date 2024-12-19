@@ -1,4 +1,5 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
+import { PASSWORD_CONFIG } from './settings';
 
 export class CreateUserDto {
   @IsString()
@@ -6,4 +7,7 @@ export class CreateUserDto {
 
   @IsEmail()
   email: string;
+
+  @IsStrongPassword(PASSWORD_CONFIG)
+  password: string;
 }
